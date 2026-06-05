@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRシンギュラリティ・ラッシュ：アルティメット・インパクト</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            /* いただいた画像を画面全体の背景に */
+            background-image: linear-gradient(rgba(5, 5, 12, 0.8), rgba(5, 5, 12, 0.85)), url('kabe.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Impact', 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* 【重要】画面の完全ど真ん中に配置するためのラッパー */
+        .outer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* 筐体とショップを綺麗にまとめるメイングリッド（中央寄せ） */
+        .main-wrapper {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 35px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.1);
+            position: relative;
+        }
+
+        /* パチンコ台筐体（これが常に中心の主役） */
+        #machine {
+            width: 480px;
+            background: linear-gradient(180deg, #180d2b, #05030f);
+            border: 6px solid #ffd700;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.6), inset 0 0 30px rgba(255,215,0,0.15);
+            text-align: center;
+            position: relative;
+        }
+
+        /* ショップパネル：サイバーで洗練されたデザイン */
+        #shop-panel {
+            width: 280px;
+            background: linear-gradient(180deg, rgba(11, 17, 32, 0.95), rgba(23, 32, 48, 0.95));
+            border: 3px solid #00ffcc;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.25);
+        }
+        #shop-panel h3 {
+            margin: 0 0 15px 0;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            font-size: 22px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .shop-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .item-name { font-size: 15px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .item-desc { font-size: 12px; color: #94a3b8; margin-bottom: 10px; font-family: sans-serif; line-height: 1.4; }
+        .buy-btn {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(180deg, #38bdf8, #0284c7);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .buy-btn:hover:not(:disabled) { background: linear-gradient(180deg, #7dd3fc, #0369a1); }
+        .buy-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+        .status-badge { font-size: 11px; background: #e11d48; color: #fff; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-top: 6px; font-family: sans-serif; font-weight: bold; }
+
+        /* 液晶画面 */
+        #screen {
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid #00ffff;
+            border-radius: 12px;
+            height: 220px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 25px rgba(0, 255, 255, 0.5);
+        }
+        #effect-text {
+            font-size: 32px;
+            color: #fff;
+            text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
+            font-weight: bold;
+            margin-bottom: 15px;
+            z-index: 2;
+        }
+        /* リールエリア */
+        .reel-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 2;
+            margin-bottom: 15px;
+        }
+        .reel-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .reel {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #ffd700;
+            border-radius: 10px;
+            font-size: 50px;
+            line-height: 90px;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
+        }
+        .stop-btn {
+            width: 70px;
+            height: 35px;
+            background: linear-gradient(180deg, #e2e8f0, #94a3b8);
+            color: #0f172a;
+            border: 2px solid #64748b;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .stop-btn:disabled { background: #334155; color: #64748b; border-color: #1e293b; cursor: not-allowed; }
+
+        /* 操作部 */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+            height: 50px;
+        }
+        .action-btn {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        #lever {
+            background: linear-gradient(180deg, #00f2fe, #4facfe);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
+            width: 150px;
+        }
+        #push-button {
+            background: linear-gradient(180deg, #ef4444, #991b1b);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.9);
+            width: 180px;
+            border-radius: 12px;
+            display: none; 
+            animation: pulse 0.15s infinite alternate;
+        }
+        @keyframes pulse { 0% { transform: scale(1); filter: brightness(1); } 100% { transform: scale(1.1); filter: brightness(1.6); } }
+        
+        .counter-box {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 16px;
+            color: #00ffcc;
+            text-shadow: 0 0 5px #00ffcc;
+            margin-top: 5px;
+        }
+
+        /* 激アツカットイン */
+        #cutin {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 0, 85, 0.3), rgba(0, 0, 0, 0.5)), url('kabe.png');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            font-size: 36px;
+            font-weight: bold;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-shadow: 3px 3px 0 #000, 0 0 20px #00ffff;
+            animation: flash 0.1s infinite alternate;
+        }
+        @keyframes flash { 0% { filter: brightness(1.2) contrast(1.2); } 100% { filter: brightness(1.8) contrast(1.5); } }
+
+        /* 【新機能】大当り時の画面全体フリーズ＆フラッシュ衝撃エフェクト */
+        #impact-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 全画面大当りFEVERスクリーン */
+        #fever-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('kabe.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 99;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: backScroll 5s linear infinite, shake 0.05s infinite;
+        }
+        #fever-screen h1 {
+            font-size: 90px;
+            color: #fff;
+            text-shadow: 0 0 20px #ff0055, 0 0 40px #ff00ff, 0 0 60px #ffd700;
+            margin: 0;
+            letter-spacing: 5px;
+            animation: zoomPulse 0.3s infinite alternate;
+        }
+        #fever-screen p {
+            font-size: 40px;
+            color: #ffd700;
+            text-shadow: 0 0 15px #000;
+            margin: 20px 0 0 0;
+        }
+        #fever-screen .close-fever-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #fff;
+            color: #000;
+            border: 3px solid #ffd700;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255,255,255,0.8);
+        }
+
+        /* アニメーション */
+        @keyframes flashWhite {
+            0% { opacity: 1; }
+            40% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        @keyframes zoomPulse {
+            0% { transform: scale(0.95); }
+            100% { transform: scale(1.05); }
+        }
+        @keyframes shake {
+            0% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(-2px, -2px) rotate(0.5deg); }
+        }
+        .shockwave {
+            animation: machineShake 0.4s ease-out !important;
+        }
+        @keyframes machineShake {
+            0% { transform: scale(1.1) translate(10px, 10px); filter: brightness(3); }
+            20% { transform: translate(-15px, 5px) rotate(2deg); }
+            40% { transform: translate(15px, -10px) rotate(-2deg); }
+            60% { transform: translate(-10px, 10px); }
+            80% { transform: translate(5px, -5px); }
+            100% { transform: scale(1) translate(0, 0); filter: brightness(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 大当り時の衝撃エフェクト用オーバーレイ -->
+    <div id="impact-overlay"></div>
+
+    <!-- 大当り時の全画面脳汁大炸裂スクリーン -->
+    <div id="fever-screen">
+        <h1>超大当りFEVER!!!!!</h1>
+        <p>＋３０００発 獲得！！！</p>
+        <button class="close-fever-btn" onclick="closeFever()">通常に戻る</button>
+    </div>
+
+    <!-- 画面の完全ど真ん中に配置するための外枠 -->
+    <div class="outer-container">
+        
+        <div class="main-wrapper" id="main-wrapper">
+            
+            <!-- パチンコ台本体（常に主役） -->
+            <div id="machine">
+                <div id="screen">
+                    <div id="cutin">ネオン大画面演出</div>
+                    <div id="effect-text">CHANCE...</div>
+                    
+                    <div class="reel-container">
+                        <div class="reel-wrapper">
+                            <div class="reel" id="reel1">⏳</div>
+                            <button class="stop-btn" id="stop1" onclick="stopReel(1)" disabled>STOP1</button>
+                        </div>
+                        <div class="reel-wrapper">
+                            <div class="reel" id="reel2">⏳</div>
+                            <button class="stop-btn" id="stop2" onclick="stopReel(2)" disabled>STOP2</button>
+                        </div>
+                        <div class="reel-wrapper">
+                            <div class="reel" id="reel3">⏳</div>
+                            <button class="stop-btn" id="stop3" onclick="stopReel(3)" disabled>STOP3</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="btn-group">
+                        <button id="lever" class="action-btn" onclick="spin()">START LEVER</button>
+                        <button id="push-button" class="action-btn" onclick="triggerFinalPush()">一撃PUSH!!!</button>
+                    </div>
+                    <div class="counter-box">
+                        <div>持ち玉: <span id="holdingCoins">1000</span>発</div>
+                        <div>大当り回数: <span id="bonusCount">0</span>回</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ネオン・ショップ -->
+            <div id="shop-panel">
+                <h3>🛒 NEON SHOP</h3>
+                
+                <div class="shop-item">
+                    <div class="item-name">💎 確率10倍ブースター</div>
+                    <div class="item-desc">通常1/200の大当り確率を、次回のみ【10倍（1/20）】に爆上げします。</div>
+                    <button class="buy-btn" id="buy-booster" onclick="buyItem('booster', 400)">400発で購入</button>
+                    <div id="badge-booster" class="status-badge" style="display:none;">確率10倍中!</div>
+                </div>
+
+                <div class="shop-item">
+                    <div class="item-name">🔮 神の手（強制テンパイ）</div>
+                    <div class="item-desc">確実に「７」を2つ並べ、一撃PUSHボタンの激アツ権利をもぎ取ります。</div>
+                    <button class="buy-btn" id="buy-tenpai" onclick="buyItem('tenpai', 1000)">1000発で購入</button>
+                    <div id="badge-tenpai" class="status-badge" style="display:none;">セット完了!</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+const symbols = ["🍒", "🍉", "🔔", "７"];
+let coins = 1000;
+let bonus = 0;
+let isSpinning = false;
+let currentResult = [];
+let reelIntervals = [null, null, null];
+let stoppedCount = 0;
+
+let hasBooster = false;
+let hasTenpai = false;
+
+function updateShopUI() {
+    document.getElementById('buy-booster').disabled = (coins < 400 || hasBooster || isSpinning);
+    document.getElementById('buy-tenpai').disabled = (coins < 1000 || hasTenpai || isSpinning);
+    
+    document.getElementById('badge-booster').style.display = hasBooster ? "inline-block" : "none";
+    document.getElementById('badge-tenpai').style.display = hasTenpai ? "inline-block" : "none";
+}
+
+function buyItem(itemType, cost) {
+    if (coins < cost) return;
+    coins -= cost;
+    if (itemType === 'booster') hasBooster = true;
+    if (itemType === 'tenpai') hasTenpai = true;
+    
+    document.getElementById('holdingCoins').innerText = coins;
+    updateShopUI();
+}
+
+function spin() {
+    if (isSpinning || coins < 50) return;
+    
+    isSpinning = true;
+    stoppedCount = 0;
+    coins -= 50; 
+    document.getElementById('holdingCoins').innerText = coins;
+    
+    document.getElementById('lever').disabled = true;
+    document.getElementById('push-button').style.display = "none";
+    document.getElementById('cutin').style.display = "none";
+    
+    updateShopUI();
+    
+    const rand = Math.random();
+    let hitProbability = 0.005; // 通常大当り確率は 0.5% (1/200) のガチ仕様
+    
+    if (hasBooster) {
+        hitProbability = 0.05; // 10倍ブースター時は 5% (1/20) にアップ
+        hasBooster = false; 
+    }
+
+    if (hasTenpai) {
+        if (Math.random() < 0.35) { 
+            currentResult = ["７", "７", "７"]; 
+        } else {
+            currentResult = ["７", "７", "🍉"]; 
+        }
+        hasTenpai = false; 
+    } else {
+        if (rand < hitProbability) {
+            currentResult = ["７", "７", "７"]; 
+        } else if (rand < 0.40) {
+            let sym = symbols[Math.floor(Math.random() * 3)];
+            currentResult = [sym, sym, sym]; 
+        } else {
+            currentResult = ["🍒", "🔔", "🍉"]; 
+            if(Math.random() < 0.15) currentResult = ["７", "７", "🍉"]; 
+        }
+    }
+
+    const effText = document.getElementById('effect-text');
+    effText.innerText = "🎰 狙え！目押しタイム 🎰";
+
+    startReelShuffle(1);
+    startReelShuffle(2);
+    startReelShuffle(3);
+}
+
+function startReelShuffle(reelNum) {
+    let count = Math.floor(Math.random() * 4);
+    document.getElementById(`stop${reelNum}`).disabled = false;
+    
+    reelIntervals[reelNum - 1] = setInterval(() => {
+        document.getElementById(`reel${reelNum}`).innerText = symbols[count % 4];
+        count++;
+    }, 60);
+}
+
+function stopReel(reelNum) {
+    if (!reelIntervals[reelNum - 1]) return;
+    
+    clearInterval(reelIntervals[reelNum - 1]);
+    reelIntervals[reelNum - 1] = null;
+    document.getElementById(`stop${reelNum}`).disabled = true;
+    
+    document.getElementById(`reel${reelNum}`).innerText = currentResult[reelNum - 1];
+    stoppedCount++;
+
+    if (stoppedCount === 2) {
+        checkTemplateEffect();
+    }
+
+    if (stoppedCount === 3) {
+        checkResult(currentResult);
+    }
+}
+
+function checkTemplateEffect() {
+    let activeReels = [
+        document.getElementById('reel1').innerText,
+        document.getElementById('reel2').innerText,
+        document.getElementById('reel3').innerText
+    ];
+    let sevenCount = activeReels.filter(s => s === "７").length;
+
+    if (sevenCount === 2 && currentResult.includes("７")) {
+        let activeReelNum = reelIntervals.findIndex(i => i !== null) + 1;
+        clearInterval(reelIntervals[activeReelNum - 1]);
+        reelIntervals[activeReelNum - 1] = null;
+        document.getElementById(`stop${activeReelNum}`).disabled = true;
+
+        document.getElementById('cutin').innerText = "魂の一撃を叩き込め！";
+        document.getElementById('cutin').style.display = "flex";
+        document.getElementById('push-button').style.display = "inline-block"; 
+        document.getElementById('effect-text').innerText = "🚨 ネオンインパクト 🚨";
+    }
+}
+
+function triggerFinalPush() {
+    document.getElementById('push-button').style.display = "none";
+    document.getElementById('cutin').style.display = "none";
+    
+    document.getElementById('reel1').innerText = currentResult[0];
+    document.getElementById('reel2').innerText = currentResult[1];
+    document.getElementById('reel3').innerText = currentResult[2];
+    
+    checkResult(currentResult);
+}
+
+function checkResult(result) {
+    const effText = document.getElementById('effect-text');
+    
+    if (result[0] === result[1] && result[1] === result[2]) {
+        if (result[0] === "７") {
+            // 【究極進化】大当り時の圧倒的衝撃エフェクト
+            triggerImpactEffects();
+            
+            effText.innerHTML = "<span style='color:#fff; text-shadow: 0 0 15px #ff0055, 0 0 30px #ff007f;'>👑ネオンGOD FEVER!!👑</span>";
+            coins += 3000; 
+            bonus++;
+        } else {
+            effText.innerText = "🎉小当り入賞!🎉";
+            coins += 300;
+        }
+    } else {
+        effText.innerText = "無念……落選！";
+    }
+    
+    document.getElementById('holdingCoins').innerText = coins;
+    document.getElementById('bonusCount').innerText = bonus;
+    
+    for(let i=1; i<=3; i++) {
+        document.getElementById(`stop${i}`).disabled = true;
+        if(reelIntervals[i-1]) clearInterval(reelIntervals[i-1]);
+    }
+    isSpinning = false;
+    document.getElementById('lever').disabled = false;
+    
+    updateShopUI();
+}
+
+// 脳汁大激震エフェクトの発動関数
+function triggerImpactEffects() {
+    // 1. 全画面ホワイトアウト＆フラッシュ
+    const overlay = document.getElementById('impact-overlay');
+    overlay.style.animation = 'none';
+    overlay.offsetHeight; // 強制リフロー
+    overlay.style.animation = 'flashWhite 0.8s ease-out forwards';
+
+    // 2. スロット筐体自体の激烈なブレ・震動（ショックウェーブ）
+    const wrapper = document.getElementById('main-wrapper');
+    wrapper.classList.add('shockwave');
+    setTimeout(() => {
+        wrapper.classList.remove('shockwave');
+    }, 500);
+
+    // 3. 0.4秒後に画面全体を大当り専用のド派手な全画面にロック（いただいた画像がベース）
+    setTimeout(() => {
+        document.getElementById('fever-screen').style.display = 'flex';
+    }, 400);
+}
+
+function closeFever() {
+    document.getElementById('fever-screen').style.display = 'none';
+}
+
+updateShopUI();
+</script>
+</body>
+</html>
