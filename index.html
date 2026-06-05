@@ -3,350 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRシンギュラリティ・ラッシュ：マルチストップEDIT</title>
+    <title>四葉のクローバーを探せ！</title>
     <style>
         body {
-            background-color: #030307;
-            color: #fff;
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #e6f4ea;
             margin: 0;
-            overflow: hidden;
-            transition: background 0.1s ease;
-        }
-        /* パチンコ台筐体 */
-        #machine {
-            width: 480px;
-            background: linear-gradient(180deg, #2a1a4a, #0b071e);
-            border: 5px solid #ffd700;
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 0 60px rgba(168, 85, 247, 0.4);
-            text-align: center;
-            position: relative;
-            box-sizing: border-box;
-        }
-        /* 液晶画面 */
-        #screen {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.35)), url('kabe.png');
-            background-size: cover;
-            background-position: center;
-            border: 4px solid #00ffff;
-            border-radius: 12px;
-            height: 220px;
-            margin-bottom: 25px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
+            height: 100vh;
             overflow: hidden;
-            box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.7);
+            user-select: none;
         }
-        #effect-text {
-            font-size: 32px;
-            color: #fff;
-            text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, 2px 2px 4px #000;
-            font-weight: bold;
-            margin-bottom: 15px;
-            z-index: 2;
-        }
-        /* リールエリア */
-        .reel-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            z-index: 2;
-            margin-bottom: 15px;
-        }
-        .reel-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        .reel {
-            width: 90px;
-            height: 90px;
-            background: rgba(255, 255, 255, 0.95);
-            border: 4px solid #ffd700;
-            border-radius: 10px;
-            font-size: 50px;
-            line-height: 90px;
-            color: #000;
-            font-weight: bold;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
-        }
-        /* 個別ストップボタン */
-        .stop-btn {
-            width: 70px;
-            height: 35px;
-            background: linear-gradient(180deg, #e2e8f0, #94a3b8);
-            color: #0f172a;
-            border: 2px solid #64748b;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-        }
-        .stop-btn:active { transform: scale(0.95); }
-        .stop-btn:disabled { background: #334155; color: #64748b; border-color: #1e293b; box-shadow: none; cursor: not-allowed; }
 
-        /* 操作部（レバーと中央PUSHボタン） */
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+        h1 {
+            color: #137333;
+            font-size: 20px;
+            margin-bottom: 5px;
+            text-align: center;
         }
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-            justify-content: center;
-            height: 50px;
+
+        p {
+            color: #5f6368;
+            margin: 0 0 15px 0;
+            font-size: 14px;
         }
-        .action-btn {
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
-        #lever {
-            background: linear-gradient(180deg, #00f2fe, #4facfe);
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
-            width: 150px;
-        }
-        /* クライマックス用一撃ボタン */
-        #push-button {
-            background: linear-gradient(180deg, #ef4444, #991b1b);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
-            width: 180px;
-            border-radius: 12px;
-            display: none; 
-            animation: pulse 0.2s infinite alternate;
-        }
-        @keyframes pulse { 0% { transform: scale(1); filter: brightness(1); } 100% { transform: scale(1.08); filter: brightness(1.5); } }
-        
-        .action-btn:disabled { background: #444 !important; border-color: #666; box-shadow: none !important; cursor: not-allowed; animation: none; }
-        
-        .counter-box {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            font-size: 16px;
-            color: #00ffcc;
-            text-shadow: 0 0 5px #00ffcc;
-            margin-top: 5px;
-        }
-        /* カットイン */
-        #cutin {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(255, 0, 85, 0.2), rgba(0, 0, 0, 0.4)), url('kabe.png');
+
+        /* ゲームボード（送っていただいた画像を背景に設定） */
+        #game-board {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            height: 70vh;
+            background-image: url('ok.png'); /* ここで画像を読み込んでいます */
             background-size: cover;
             background-position: center;
-            color: #fff;
-            font-size: 38px;
-            font-weight: bold;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            text-shadow: 3px 3px 0 #000, 0 0 20px #00ffff;
-            animation: flash 0.1s infinite alternate;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(32,33,36,0.08), 0 1px 3px rgba(32,33,36,0.04);
+            border: 1px solid #dadce0;
+            overflow: hidden;
         }
-        @keyframes flash { 0% { filter: brightness(1.2) contrast(1.2); } 100% { filter: brightness(1.8) contrast(1.5); } }
+
+        /* クローバーのサイズ（28px） */
+        .clover {
+            position: absolute;
+            font-size: 28px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .clover:hover {
+            transform: scale(1.3) !important;
+            z-index: 10;
+        }
+
+        /* クリアポップアップ */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 100;
+            border: 1px solid #dadce0;
+        }
+
+        #popup h2 {
+            color: #1a73e8;
+            margin-top: 0;
+        }
+
+        #popup button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 100px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="machine">
-        <div id="screen">
-            <div id="cutin">ネオン大画面演出</div>
-            <div id="effect-text">CHANCE...</div>
-            
-            <div class="reel-container">
-                <div class="reel-wrapper">
-                    <div class="reel" id="reel1">⏳</div>
-                    <button class="stop-btn" id="stop1" onclick="stopReel(1)" disabled>STOP1</button>
-                </div>
-                <div class="reel-wrapper">
-                    <div class="reel" id="reel2">⏳</div>
-                    <button class="stop-btn" id="stop2" onclick="stopReel(2)" disabled>STOP2</button>
-                </div>
-                <div class="reel-wrapper">
-                    <div class="reel" id="reel3">⏳</div>
-                    <button class="stop-btn" id="stop3" onclick="stopReel(3)" disabled>STOP3</button>
-                </div>
-            </div>
-        </div>
+    <h1>🍀 四葉のクローバーを探せ！ 🍀</h1>
+    <p>可愛い背景の中に「🍀」が1つだけ隠れているよ。見つけてクリックしてね！</p>
 
-        <div class="controls">
-            <div class="btn-group">
-                <button id="lever" class="action-btn" onclick="spin()">START LEVER</button>
-                <button id="push-button" class="action-btn" onclick="triggerFinalPush()">一撃PUSH!!!</button>
-            </div>
-            <div class="counter-box">
-                <div>持ち玉: <span id="holdingCoins">1000</span>発</div>
-                <div>大当り回数: <span id="bonusCount">0</span>回</div>
-            </div>
-        </div>
+    <div id="game-board"></div>
+
+    <div id="popup">
+        <h2>🎉 クリア！ 🎉</h2>
+        <p>おめでとうございます！四葉のクローバーが見つかりました！</p>
+        <button onclick="startGame()">もう一度遊ぶ</button>
     </div>
 
-<script>
-const symbols = ["🍒", "🍉", "🔔", "７"];
-let coins = 1000;
-let bonus = 0;
-let isSpinning = false;
-let currentResult = [];
-let reelIntervals = [null, null, null];
-let stoppedCount = 0;
+    <script>
+        const board = document.getElementById('game-board');
+        const popup = document.getElementById('popup');
 
-function spin() {
-    if (isSpinning || coins < 50) return;
-    
-    isSpinning = true;
-    stoppedCount = 0;
-    coins -= 50; 
-    document.getElementById('holdingCoins').innerText = coins;
-    
-    // UI初期化
-    document.getElementById('lever').disabled = true;
-    document.getElementById('push-button').style.display = "none";
-    document.body.style.backgroundColor = "#030307";
-    document.getElementById('cutin').style.display = "none";
-    
-    // 内部的な運命の抽選
-    const rand = Math.random();
-    if (rand < 0.15) {
-        currentResult = ["７", "７", "７"]; // 大当りフラグ
-    } else if (rand < 0.45) {
-        let sym = symbols[Math.floor(Math.random() * 3)];
-        currentResult = [sym, sym, sym]; // 小当りフラグ
-    } else {
-        currentResult = ["🍒", "🔔", "🍉"]; // ハズレ
-        if(Math.random() * 100 < 50) currentResult = ["７", "７", "🍉"]; // テンパイハズレ
-    }
+        // クローバーの配置間隔（隙間なく敷き詰める設定）
+        const GRID_SIZE = 26; 
 
-    const effText = document.getElementById('effect-text');
-    effText.innerText = "🎰 狙え！目押しタイム 🎰";
+        function startGame() {
+            board.innerHTML = '';
+            popup.style.display = 'none';
 
-    // 3つのリールを一斉にシャッフル開始
-    startReelShuffle(1);
-    startReelShuffle(2);
-    startReelShuffle(3);
-}
+            const boardWidth = board.clientWidth;
+            const boardHeight = board.clientHeight;
 
-function startReelShuffle(reelNum) {
-    let count = Math.floor(Math.random() * 4);
-    document.getElementById(`stop${reelNum}`).disabled = false; // ストップボタンを有効化
-    
-    reelIntervals[reelNum - 1] = setInterval(() => {
-        document.getElementById(`reel${reelNum}`).innerText = symbols[count % 4];
-        count++;
-    }, 60);
-}
+            // 敷き詰める列数と行数を計算
+            const cols = Math.floor(boardWidth / GRID_SIZE);
+            const rows = Math.floor(boardHeight / GRID_SIZE);
+            const totalClovers = cols * rows;
 
-// 通常時の新要素：ユーザーが任意のタイミングでリールを止める！
-function stopReel(reelNum) {
-    if (!reelIntervals[reelNum - 1]) return;
-    
-    clearInterval(reelIntervals[reelNum - 1]);
-    reelIntervals[reelNum - 1] = null;
-    document.getElementById(`stop${reelNum}`).disabled = true; // 押したボタンを無効化
-    
-    // 内部で決まっていた絵柄をピタッと停止
-    document.getElementById(`reel${reelNum}`).innerText = currentResult[reelNum - 1];
-    stoppedCount++;
+            // 四葉の位置をランダムに決定
+            const targetIndex = Math.floor(Math.random() * totalClovers);
 
-    // 2つのリールが止まった時点で「７」が並んでいたら激アツ判定
-    if (stoppedCount === 2) {
-        checkTemplateEffect();
-    }
+            // 余白調整用のオフセット
+            const offsetX = (boardWidth - (cols * GRID_SIZE)) / 2;
+            const offsetY = (boardHeight - (rows * GRID_SIZE)) / 2;
 
-    // 3つすべてのリールが手動で止まった（またはギミックへ移行した）時の処理
-    if (stoppedCount === 3) {
-        checkResult(currentResult);
-    }
-}
+            for (let i = 0; i < totalClovers; i++) {
+                const col = i % cols;
+                const row = Math.floor(i / cols);
 
-// 7テンパイ時のギミック移行
-function checkTemplateEffect() {
-    // 画面に残っている絵柄をチェック（どの順番で止めても、2つが「７」なら発動）
-    let activeReels = [
-        document.getElementById('reel1').innerText,
-        document.getElementById('reel2').innerText,
-        document.getElementById('reel3').innerText
-    ];
-    
-    let sevenCount = activeReels.filter(s => s === "７").length;
+                const clover = document.createElement('div');
+                clover.className = 'clover';
 
-    if (sevenCount === 2 && currentResult.includes("７")) {
-        // まだ回っている最後のリールのシャッフルを一時停止し、一撃ボタン演出へ！
-        let activeReelNum = reelIntervals.findIndex(i => i !== null) + 1;
-        clearInterval(reelIntervals[activeReelNum - 1]);
-        reelIntervals[activeReelNum - 1] = null;
-        document.getElementById(`stop${activeReelNum}`).disabled = true;
+                // 自然に見せるためのちょっとしたズレ
+                const jitterX = (Math.random() - 0.5) * 4;
+                const jitterY = (Math.random() - 0.5) * 4;
 
-        // 激アツ！ネオン画像が前面で超フラッシュ
-        document.getElementById('cutin').innerText = "魂の一撃を叩き込め！";
-        document.getElementById('cutin').style.display = "flex";
-        document.getElementById('push-button').style.display = "inline-block"; // デカボタン出現
-        document.getElementById('effect-text').innerText = "🚨 ネオンインパクト 🚨";
-        document.body.style.backgroundColor = "#250215";
-    }
-}
+                clover.style.left = `${col * GRID_SIZE + offsetX + jitterX}px`;
+                clover.style.top = `${row * GRID_SIZE + offsetY + jitterY}px`;
 
-// クライマックス：一撃ボタンを押した瞬間
-function triggerFinalPush() {
-    document.getElementById('push-button').style.display = "none";
-    document.getElementById('cutin').style.display = "none";
-    
-    // 最後の開いているリールに、大当りかハズレの最終結果を表示！
-    document.getElementById('reel1').innerText = currentResult[0];
-    document.getElementById('reel2').innerText = currentResult[1];
-    document.getElementById('reel3').innerText = currentResult[2];
-    
-    checkResult(currentResult);
-}
+                // ランダムに回転
+                const rotate = Math.random() * 360;
+                clover.style.transform = `rotate(${rotate}deg)`;
 
-function checkResult(result) {
-    const effText = document.getElementById('effect-text');
-    
-    if (result[0] === result[1] && result[1] === result[2]) {
-        if (result[0] === "７") {
-            effText.innerHTML = "<span style='color:#fff; text-shadow: 0 0 15px #ff0055, 0 0 30px #ff007f; animation: pulse 0.1s infinite;'>👑ネオンGOD FEVER!!👑</span>";
-            coins += 2500;
-            bonus++;
-            document.body.style.backgroundColor = "#4c0519";
-        } else {
-            effText.innerText = "🎉小当り入賞!🎉";
-            coins += 300;
+                if (i === targetIndex) {
+                    clover.textContent = '🍀';
+                    clover.onclick = function(e) {
+                        e.stopPropagation();
+                        popup.style.display = 'block';
+                    };
+                } else {
+                    clover.textContent = '☘️';
+                }
+
+                board.appendChild(clover);
+            }
         }
-    } else {
-        effText.innerText = "無念……落選！";
-    }
-    
-    document.getElementById('holdingCoins').innerText = coins;
-    document.getElementById('bonusCount').innerText = bonus;
-    
-    // すべてのストップボタンを安全のため一括無効化してレバーを戻す
-    for(let i=1; i<=3; i++) {
-        document.getElementById(`stop${i}`).disabled = true;
-        if(reelIntervals[i-1]) clearInterval(reelIntervals[i-1]);
-    }
-    isSpinning = false;
-    document.getElementById('lever').disabled = false;
-}
-</script>
+
+        window.onload = startGame;
+        let resizeTimeout;
+        window.onresize = function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(startGame, 200);
+        };
+    </script>
+
 </body>
 </html>
